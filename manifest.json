@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+  "name": "Buildkite Helper",
+  "version": "0.1",
+  "permissions": [
+      "notifications",
+      "tabs"
+  ],
+  "background": {
+      "scripts": ["jquery-3.1.1.min.js",
+                  "background.js"]
+  },
+  "browser_action": {
+    "default_title": "Track this build."
+  }
+}
