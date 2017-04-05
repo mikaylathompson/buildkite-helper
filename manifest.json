@@ -8,8 +8,10 @@
       "https://buildkite.com/"
   ],
   "background": {
-      "scripts": ["jquery-3.1.1.min.js",
-                  "background.js"]
+      "scripts": [
+          "background.js",
+          "jquery.min.js"
+      ]
   },
   "browser_action": {
     "default_title": "Track this build."
