@@ -132,6 +132,31 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     });
 });
 
+// Right-click Menu 
+chrome.contextMenus.create({title: "Track Build",
+                            contexts: ["link"],
+                            targetUrlPatterns: ["https://buildkite.com/*/builds/*"],
+                            onclick: function(info, tab) {
+                                var url = info.linkUrl;
+                                var pageUrl = url.split('#')[0];
+                                var jsonUrl = pageUrl + ".json";
+
+                                $.getJSON(jsonUrl, function(data) {
+                                    if (data.state === "started") {
+                                        if (-1 === $.inArray(data.number, tracked_builds)) {
+                                            indicateTabIsTracked(tab.id);
+                                            tracked_builds.push(data.number);
+                                            attachTracker(jsonUrl, pageUrl);
+                                        } else {
+                                            indicateTabIsTracked(tab.id);
+                                        }
+                                    } else {
+                                        indicateTabCantBeTracked(tab.id);
+                                    }
+                                });
+                            }
+});
+
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {

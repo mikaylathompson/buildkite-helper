@@ -5,6 +5,7 @@
   "permissions": [
       "notifications",
       "tabs",
+      "contextMenus",
       "https://buildkite.com/"
   ],
   "background": {
