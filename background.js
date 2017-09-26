@@ -10,6 +10,7 @@ String.prototype.format = function() {
 }
 
 var tracked_builds = []
+var buildkite_url = "https://buildkite.com{0}";
 
 function spawnNotification(noteTitle, noteBody, timeout_s, is_important, icon = null) {
     var options = {
@@ -158,8 +159,28 @@ chrome.contextMenus.create({title: "Track Build",
 });
 
 
+function attachTrackerToNewBuilds(buildJson) {
+    var retry = setInterval(function() {
+        $.getJSON(buildJson, function(data) {
+            data.forEach(function(build) {
+                if ((build.state === "started") &&
+                    (-1 === $.inArray(build.number, tracked_builds))) {
+
+                    console.log("Attaching tracker to build: " + build.number);
+                    tracked_builds.push(build.number);
+
+                    attachTracker(buildkite_url.format(build.json_path),
+                                  buildkite_url.format(build.path));
+                }
+            });
+        });
+    }, 30 * 1000);
+}
+
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         console.log("Message: " + request.message);
     }
 );
+
+attachTrackerToNewBuilds(buildkite_url.format("/builds.json"));
